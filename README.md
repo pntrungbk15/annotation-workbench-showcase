@@ -1,7 +1,8 @@
 # AI Annotation Workbench
 
-**A desktop workbench for labelling images for computer vision: draw boxes and polygons, let local models propose
-annotations, review them, check the dataset, and export YOLO or COCO.**
+**A desktop workbench for labelling images and videos for computer vision: boxes, rotated boxes, polygons, keypoints
+and tags; 16 local models in 11 task families propose annotations, outlines, depth maps, mattes and tracks; you
+review and correct them, evaluate models and export to the format your training code expects.**
 
 ![Portfolio](https://img.shields.io/badge/portfolio-showcase_only-1F3A5F)
 ![Source](https://img.shields.io/badge/source-private-6B6B6B)
@@ -9,15 +10,12 @@ annotations, review them, check the dataset, and export YOLO or COCO.**
 ![Inference](https://img.shields.io/badge/inference-ONNX_Runtime-005CED)
 ![Runs on](https://img.shields.io/badge/runs_on-laptop_CPU-6D28D9)
 
-> **About this repository.** It presents the application through screenshots, its design and its measured results.
-> It contains no source code: the implementation is private at this stage, and it is built on FluentQt Community and
-> FluentQt Pro, which are not publicly available either. The photos shown come from the COCO 2017 validation set
-> (credited below).
+> **About this repository.** It presents the application through screenshots, its design, its model gallery and
+> its measured results. It contains no source code: the implementation is private at this stage, and it is built on
+> FluentQt Community and FluentQt Pro, which are not publicly available either. The photos shown are credited in
+> [Credits](#credits).
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/02-annotate-proposals-dark.png">
-  <img src="docs/images/02-annotate-proposals-light.png" alt="Annotate workspace: YOLOX-S proposals on a beach photo, hatched until reviewed, with the selected proposal's class, geometry, score and provenance in the property inspector">
-</picture>
+![Model Gallery: Grounding DINO compared with YOLOX-S on the same street photo](docs/images/09-gallery-compare-light.png)
 
 ## What it is
 
@@ -26,135 +24,141 @@ control of what goes into the dataset. In this workbench every model output is a
 attributed to the model and its score, and never exported until someone accepts it. Corrections are ordinary edits
 with undo.
 
+| Workspace | |
+|---|---|
+| **Annotate** | Boxes, **rotated boxes** (rotate with a handle or `[` `]`), polygons, **keypoints** (a guided 17-point person template with visibility per joint) and **image tags**. Run a model on the image: detection, rotated detection, instance and semantic segmentation, **text-prompted detection**, pose, classification, OCR, document layout, depth, background removal; **smart polygon** with a click. **Results**: per-class counts and what they are based on, image tags, raster layers with opacity and legend. **Video**: frames on a timeline, tracking through the video, the trail of every track. |
+| **Dataset** | Data grid with thumbnails, status, splits, counts, classes and problems; import images, folders, videos, YOLO, COCO, DOTA and PaddleOCR; validation specific to the export format. |
+| **Gallery** | Every model with **its own output on a redistributable photo**, the facts of the run and the photo's licence; two models compared on the same photo; *Try it* runs the model on that photo in your project. |
+| **Models** | Catalogue with task, licence notes, sources, sizes and SHA-256; downloads with resume and verification (archives extracted and checked); verify, remove, offline use; the inference runtime as it really is. |
+| **Evaluation** | The metric of each task: box, rotated-box, mask and keypoint (OKS) AP, counting error, OCR character error rate, top-k accuracy, mIoU; configuration and environment stored per run. |
+
+## Screenshots
+
+All 16 are the real application with real model output on a laptop CPU.
+
 | | |
 |---|---|
-| **Annotate** | Boxes and polygons: draw, move, resize, edit vertices, undo/redo, zoom and pan, keyboard-first review (N next, Enter accept, Delete reject). Detection or OCR on one image or a batch, with cancel. **Smart polygon**: click an object and SlimSAM outlines it; Tab switches between the whole object and its parts; Enter keeps it. |
-| **Dataset** | Data grid of every image: status, split, counts, classes, lowest score, problems; filters, multi-selection and batch actions. Import images, folders, YOLO and COCO. Validation lists what an export would skip or transform before anything is written. |
-| **Models** | A catalogue-driven Model Manager: task, licence of weights and code, sources, files, sizes and SHA-256; downloads with progress, resume and cancel; verify, remove, offline use; a runtime check of the inference environment; your own YOLOX-format ONNX detectors. |
-| **Evaluation** | Dataset statistics, and evaluation of a detector against reviewed images (mAP@0.5, mAP@[.5:.95], precision, recall, per-class AP) with the configuration and environment stored per run; latency and throughput from every recorded inference. |
+| ![Workspace](docs/images/01-workspace-light.png) **Workspace**: current project, its progress and recent projects | ![Detection](docs/images/02-annotate-detection-light.png) **Detection**: 33 YOLOX-S proposals waiting for review, with their provenance |
+| ![Dataset](docs/images/03-dataset-light.png) **Dataset**: thumbnails, status, splits, counts and classes | ![Models](docs/images/04-models-light.png) **Models**: catalogue, install state, task, licence and runtime |
+| ![Evaluation](docs/images/05-evaluation-light.png) **Evaluation**: YOLOX-S on the 12 reviewed sample images, per-class AP and the run history | ![Settings](docs/images/06-settings-light.png) **Settings**: theme, device, inference runtime and folders |
+| ![Instance segmentation](docs/images/07-annotate-segmentation-light.png) **Instance segmentation**: Mask R-CNN outlines as editable polygons | ![OCR](docs/images/08-annotate-ocr-light.png) **OCR**: text regions with their recognised text |
+| ![Gallery](docs/images/09-gallery-compare-light.png) **Model Gallery**: Grounding DINO compared with YOLOX-S on the same photo | ![Rotated boxes](docs/images/10-annotate-rotated-light.png) **Rotated boxes**: YOLO11n-OBB on aerial imagery, angle editable |
+| ![Pose](docs/images/11-annotate-pose-light.png) **Pose**: RTMPose keypoints with visibility per joint | ![Depth](docs/images/12-annotate-depth-light.png) **Depth**: Depth Anything V2 relative depth layer with its legend |
+| ![Matting](docs/images/13-annotate-matting-light.png) **Matting**: MODNet alpha matte, removed background as a checkerboard | ![Counting](docs/images/14-annotate-counting-light.png) **Counting**: per-class counts and what they are based on |
+| ![Layout](docs/images/15-annotate-layout-light.png) **Document layout**: Docling regions with reading order | ![Tracking](docs/images/16-annotate-tracking-light.png) **Tracking**: track ids, trails and the frame timeline on a video |
 
-## Screens
-
-| | |
-|---|---|
-| ![Smart polygon](docs/images/03-annotate-smart-polygon-light.png) | ![Dataset](docs/images/04-dataset-light.png) |
-| **Smart polygon:** one click on the horse; the outline covers the animal and its rider, other candidate outlines a Tab away. | **Dataset:** the Pro data grid over the project, the class list and its property inspector. |
-| ![Models](docs/images/05-models-light.png) | ![Evaluation](docs/images/06-evaluation-light.png) |
-| **Model Manager:** licence, sources, files and checksums before download; the inference runtime as it really is. | **Dataset statistics:** classes, coverage, model confidence and splits. |
-| ![Evaluation history](docs/images/07-evaluation-speed-light.png) | ![Dark theme](docs/images/03-annotate-smart-polygon-dark.png) |
-| **Evaluation history and inference performance**, from recorded runs. | **Dark theme.** |
+More model outputs, each with its input, run facts and photo licence: **[Model Gallery](docs/gallery.md)**.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
     subgraph App["Application process: PyQt5, FluentQt Community + Pro"]
-        UI[Workspace · Annotate · Dataset · Models · Evaluation · Settings]
-        S[Session<br/>undo/redo, debounced writes]
+        UI[Workspace · Annotate · Dataset · Gallery · Models · Evaluation · Settings]
+        S[Session<br/>shapes, tags, undo/redo]
         R[Proposal review<br/>class mapping, duplicates]
-        F[YOLO / COCO<br/>import, export, validation]
-        M[Model Manager<br/>catalogue, downloads, hashes]
-        E[Evaluation<br/>COCO-style metrics]
+        F[Formats<br/>YOLO · COCO · DOTA · MOT · PaddleOCR · masks]
+        M[Model Manager<br/>catalogue, downloads, archives, hashes]
+        E[Evaluation<br/>AP, OKS, counting, OCR, mIoU, MOTA/IDF1]
     end
     subgraph Worker["Inference worker process: no Qt"]
-        A1[YOLOX adapter]
-        A2[PP-OCR adapter]
-        A3[SlimSAM adapter<br/>embedding cache]
+        A[12 adapter families<br/>boxes · rotated · polygons · keypoints · tags · layers]
+        T[Tracker<br/>Kalman + two-stage association]
         RT[ONNX Runtime<br/>requested vs actual provider]
     end
-    P[(Project file<br/>SQLite, versioned)]
+    P[(Project file<br/>SQLite, migrations)]
     UI <--> S --> P
     UI <-- JSON lines over stdin/stdout --> Worker
-    A1 & A2 & A3 --> RT
+    A --> RT
+    A --> T
     M --> W[(Models folder)] --> Worker
 ```
 
-* **Two processes.** The window never waits for a model. The worker owns ONNX Runtime and OpenCV, so the
-  application starts and works without them: annotation, import, validation and export need no AI packages. A native
-  crash in a model provider ends the worker, not the application. Requests carry ids, and replies the user has moved
-  past are dropped.
-* **Adapters behind one schema.** Every model family implements load, predict and close, and returns boxes or
-  polygons in a common schema; review, storage, export and evaluation depend only on that schema. A new model of a
-  known family is a catalogue entry; a new family is one adapter.
-* **Honest device reporting.** ONNX Runtime silently drops a provider whose libraries fail to load. The worker
-  compares the providers it asked for with those the session actually uses, and the UI and the evaluation records
-  show the provider that ran and why it fell back.
-* **Project file with migrations.** One SQLite file per project, numbered migrations, one transaction per operation.
-  An older application refuses a newer project instead of damaging it. Images are referenced, not copied; a missing
-  image keeps its annotations and appears in the validation report.
+* **Two processes.** The window never waits for a model, a native crash in a provider ends the worker and not the
+  application, and the application works without any AI package installed. Long jobs (video frames) report progress
+  and can be cancelled; replies the user has moved past are dropped.
+* **One schema, many tasks.** Adapters return boxes, rotated boxes, polygons, keypoints or tags in a common schema, or
+  raster layers as lossless files; review, storage, export and evaluation depend only on that. A pose model runs a
+  detector first through a helper mechanism; the worker keeps models within a memory budget.
+* **Honest reporting.** The worker compares the execution providers it asked for with those that actually run, and
+  every screen and record shows the device that ran. The feature matrix separates "implemented", "real inference
+  verified", "GUI workflow verified" and "GPU verified" (nothing is GPU-verified yet).
+* **Project file with migrations.** One SQLite file per project; older projects upgrade in place; images and video
+  frames are referenced, not copied.
 
-More: [docs/architecture.md](docs/architecture.md) · [docs/feature-matrix.md](docs/feature-matrix.md) ·
-[docs/models.md](docs/models.md) · [docs/formats.md](docs/formats.md) · [docs/testing.md](docs/testing.md)
+More: [architecture](docs/architecture.md) · [feature and capability matrix](docs/feature-matrix.md) ·
+[models and licences](docs/models.md) · [formats](docs/formats.md) · [testing](docs/testing.md) ·
+[model gallery](docs/gallery.md)
 
 ## Models
 
-| Model | Task | Download | Licence |
-|---|---|---|---|
-| YOLOX-Nano / Tiny / S (Megvii) | Object detection, 80 COCO classes | 3.7 / 20 / 36 MB | Apache-2.0 |
-| PP-OCRv4 det + PP-OCRv3 English rec (PaddleOCR; RapidOCR ONNX) | Text detection and recognition | 14 MB | Apache-2.0 |
-| SlimSAM-77 int8 (from Segment Anything) | Click-to-segment | 14 MB | Apache-2.0 |
+| Task | Models | Weights licence |
+|---|---|---|
+| Object detection | YOLOX-Nano, -Tiny, -S | Apache-2.0 |
+| Rotated detection (aerial) | YOLO11n-OBB | AGPL-3.0; DOTA data academic use only |
+| Instance segmentation | Mask R-CNN R-50-FPN | MIT |
+| Semantic segmentation | FCN ResNet-50 (int8) | BSD-3 / MIT |
+| Interactive segmentation | SlimSAM-77 | Apache-2.0 |
+| Text-prompted detection | Grounding DINO Tiny | Apache-2.0 |
+| Pose | RTMPose-m with a YOLOX person detector | Apache-2.0 |
+| Classification | ConvNeXt-Tiny, MobileNetV4-Conv-Small | Apache-2.0 |
+| OCR | PP-OCRv4 detection + PP-OCRv3 English recognition | Apache-2.0 |
+| Document layout | Docling "heron" (RT-DETRv2) | Apache-2.0 |
+| Depth | Depth Anything V2 Small | Apache-2.0 |
+| Background removal | IS-Net general use, MODNet | not stated by the publisher / Apache-2.0 |
 
-All downloaded on request from their publishers, with URLs pinned and checked against SHA-256; none are bundled.
-Ultralytics YOLO models were left out on purpose: AGPL-3.0 weights would bind every distributed build.
+All models are downloaded from their publishers on request and verified against pinned SHA-256 hashes; none are
+bundled. Tracking uses the project's own ByteTrack-style tracker on any detector.
 
 ## Measured
 
-On a laptop CPU (Intel Core i5-1235U, no GPU), ONNX Runtime 1.31, CPU execution provider.
+On an Intel Core i5-1235U laptop (CPU only, ONNX Runtime 1.31), median per image after a warm-up: YOLOX-Nano 22 ms,
+YOLOX-S 142 ms, RTMPose with YOLOX-S 0.48 s for 7 people, Mask R-CNN 3.5 s, Grounding DINO 5.4 s (2.9 GB). Full table
+with load times and memory: [testing](docs/testing.md#model-latency-and-memory).
 
-| | |
-|---|---|
-| YOLOX-Nano / Tiny / S, per image | median **20 / 56 / 219 ms** over 20 COCO photos (reading, preprocessing, model, postprocessing) |
-| YOLOX-Nano, evaluation in the app (12 reviewed COCO images, 67 objects) | mAP@0.5 **0.429**, mAP@[.5:.95] 0.312, precision 0.81, recall 0.57; median 17 ms per image |
-| SlimSAM-77 int8 | **3.0 s** for the first click on an image (image encoder, then cached), **0.1 s** for each further click |
-| Windows standalone build (Nuitka) | 423 MB without model weights; every workspace opens, and the packaged worker detects objects in a COCO photo |
-| Metric implementation | matches pycocotools on real COCO ground truth (automated test) |
-
-Twelve images are a functional check of the evaluation pipeline, not a benchmark of YOLOX. Details and the full
-test results: [docs/testing.md](docs/testing.md).
+- **125 automated tests pass** with real models: every model family through the inference worker on real photos
+  (checked against COCO ground truth where it exists) and every task family end to end in the real window.
+- **Metrics checked against pycocotools**: box AP, mask AP (within 0.02–0.03) and keypoint AP (equal).
+- **Evaluation in the application**, YOLOX-S on the sample's 12 reviewed images: mAP@0.5 0.612, mAP@[.5:.95] 0.491.
+  Twelve images make this a pipeline check, not a measurement of YOLOX-S's accuracy.
 
 ## Status
 
-**Implemented and verified:**
-- box and polygon annotation
-- detection with proposal review
-- OCR
-- click-to-segment
-- batch inference
-- YOLO and COCO import and export
-- validation
-- evaluation
-- the Model Manager
-- a Windows standalone build smoke-tested with real inference
+Version 0.2, alpha. Verified with real models on CPU, end to end in the application: detection, rotated detection,
+semantic segmentation, text-prompted detection, pose, classification, OCR, document layout, depth, matting,
+click-to-segment, video frames with tracking, the Model Gallery, exports and evaluation; instance segmentation is
+verified through the worker against COCO ground truth.
 
-**Implemented, not verified:** CUDA and DirectML execution, because there is no supported GPU on the development
-machine.
-
-**Planned:**
-- rotated boxes (DOTA)
-- keypoints and pose
-- instance segmentation models
-- text-prompt grounding
-- video annotation with tracking
-- segmentation and OCR metrics
-
-The [feature matrix](docs/feature-matrix.md) compares the application with the capabilities documented by
-[X-AnyLabeling](https://github.com/CVHub520/X-AnyLabeling). It is far broader: it covers more tasks, model families and
-formats, plus video, point clouds and remote inference. This workbench is a focused, independently written
-application, not a fork, and is not affiliated with X-AnyLabeling.
+Not done yet:
+- GPU execution: implemented, never run on a GPU (the development machine has none)
+- exemplar-based counting: no counting model publishes ONNX weights
+- video object segmentation
+- VOC and LabelMe formats
 
 ## Technology
 
-Python 3.12 · PyQt5 · [FluentQt](https://github.com/pntrungbk15/fluentqt-showcase) Community (widgets, settings,
-`fluentqt.storage`) · FluentQt Pro (`TopNavigationWindow`, `ShapeEditor`, `PropertyInspector`, `DataGrid`,
-`ChartView`, `ModelInfoCard`, `CommandPalette`) · ONNX Runtime · OpenCV · NumPy · SQLite · Nuitka (standalone builds).
+Python 3.12 · PyQt5 · FluentQt Community and Pro (top navigation window, shape editor with rotated rectangles and
+keypoint sets, property inspector, data grid, charts, image compare, video timeline) · ONNX Runtime · OpenCV ·
+NumPy · SQLite · Nuitka (Windows standalone build).
 
 ## Credits
 
-* Photos: [COCO 2017](https://cocodataset.org/) validation set, each under its Flickr licence (only CC BY, CC BY-SA,
-  "no known copyright" and US-government photos are used); COCO annotations CC BY 4.0, the COCO Consortium.
-* Models: [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) (Megvii, Apache-2.0),
-  [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) (Apache-2.0) via [RapidOCR](https://huggingface.co/SWHL/RapidOCR),
-  [SlimSAM](https://github.com/czg1225/SlimSAM) (Apache-2.0) via [Xenova/slimsam-77-uniform](https://huggingface.co/Xenova/slimsam-77-uniform).
+- **COCO 2017 validation photos** (CC BY 2.0, adapted: resized, model output drawn over them): tennis team by
+  [o0bsessed](https://www.flickr.com/photos/impuls-f/4906536419/), riders by
+  [Phil_Heck](https://www.flickr.com/photos/kleche/5022207571/), grizzly bears by
+  [DenaliNPS](https://www.flickr.com/photos/denalinps/6473127891/), tennis match by
+  [Edwin Martinez1](https://www.flickr.com/photos/rhythmstrip/9639200419/), ski touring by
+  [Luigi Mengato](https://www.flickr.com/photos/luigimengato/5320611177/), couple by
+  [ChefMattRock](https://www.flickr.com/photos/chefmattrock/3397730036/), ribbon cutting by
+  [ubrayj02](https://www.flickr.com/photos/ubrayj02/5457068434/). The sample project's other photos, visible in the
+  dataset and annotation screenshots, are COCO 2017 photos under CC BY, CC BY-SA, "no known copyright" or US
+  government terms; COCO annotations are CC BY 4.0 (COCO Consortium).
+- **Street video**: [Diagonal crosswalk at Yonge and Dundas](https://commons.wikimedia.org/wiki/File:DiagonalCrosswalkYongeDundas.webm)
+  by Raysonho, CC0 1.0.
+- **Aerial photo**: [USGS high-resolution orthoimagery](https://commons.wikimedia.org/wiki/File:USGS_HRO_16Dec2010_34d06m41.305sN_118d20m10.560sW.jpg),
+  public domain.
+- **Models**: see the [model table](docs/models.md) for publishers and licences.
+- The feature set was compared with [X-AnyLabeling](https://github.com/CVHub520/X-AnyLabeling) as a reference for
+  what annotation tools offer; no code, assets or text from it are used.
 
-The screenshots and documents in this repository © Phạm Ngọc Trung; the photos within them remain under their own
-licences.
+Screenshots and documentation © Phạm Ngọc Trung.

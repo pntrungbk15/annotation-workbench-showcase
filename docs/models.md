@@ -6,21 +6,61 @@ verifies them, and from then on works offline.
 
 ## Catalogue
 
-| Model | Task | Runtime | Download | Weights licence | Code licence | Source |
-|---|---|---|---|---|---|---|
-| YOLOX-Nano | Object detection, 80 COCO classes, 416 px | ONNX Runtime | 3.7 MB | Apache-2.0 | Apache-2.0 | [Megvii YOLOX 0.1.1rc0](https://github.com/Megvii-BaseDetection/YOLOX/releases/tag/0.1.1rc0) |
-| YOLOX-Tiny | Object detection, 80 COCO classes, 416 px | ONNX Runtime | 20.2 MB | Apache-2.0 | Apache-2.0 | as above |
-| YOLOX-S | Object detection, 80 COCO classes, 640 px | ONNX Runtime | 35.9 MB | Apache-2.0 | Apache-2.0 | as above |
-| PP-OCR (PP-OCRv4 detection + PP-OCRv3 English recognition) | Text detection and recognition | ONNX Runtime | 13.7 MB | Apache-2.0 | Apache-2.0 | [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) models, ONNX conversion by [RapidOCR](https://huggingface.co/SWHL/RapidOCR) (pinned commit) |
-| SlimSAM-77 (int8) | Interactive segmentation (click, box) | ONNX Runtime | 13.8 MB | Apache-2.0 | Apache-2.0 | [SlimSAM](https://github.com/czg1225/SlimSAM), from Segment Anything; ONNX export [Xenova/slimsam-77-uniform](https://huggingface.co/Xenova/slimsam-77-uniform) (pinned commit) |
+16 models in 11 task families. Sizes are download sizes; licences are those of the weights (code licences and notes
+are in the Models workspace and in `catalog/models.json`).
 
-The detectors were trained on COCO 2017 (annotations CC BY 4.0, images under their Flickr licences). Every model
-above permits commercial use under Apache-2.0; the Models workspace shows each model's licence, its terms and the
-link to the licence text before download.
+| Model | Task | Download | Weights licence | Source (pinned) |
+|---|---|---|---|---|
+| YOLOX-Nano / Tiny / S | Object detection, 80 COCO classes | 3.7 / 20.2 / 35.9 MB | Apache-2.0 | [Megvii YOLOX 0.1.1rc0](https://github.com/Megvii-BaseDetection/YOLOX/releases/tag/0.1.1rc0) |
+| YOLO11n-OBB | Rotated detection, 15 DOTA aerial classes | 10.8 MB | **AGPL-3.0**, DOTA data academic use only | Ultralytics export mirrored at [AXERA-TECH/yolo11-obb](https://huggingface.co/AXERA-TECH/yolo11-obb) |
+| Mask R-CNN R-50-FPN | Instance segmentation, 80 COCO classes | 178 MB | MIT | [ONNX Model Zoo MaskRCNN-12](https://huggingface.co/onnxmodelzoo/MaskRCNN-12) |
+| FCN ResNet-50 int8 | Semantic segmentation, Pascal VOC | 35.5 MB | BSD-3 / MIT | [ONNX Model Zoo fcn-resnet50-12-int8](https://huggingface.co/onnxmodelzoo/fcn-resnet50-12-int8) |
+| SlimSAM-77 int8 | Interactive segmentation (clicks, box) | 13.8 MB | Apache-2.0 | [SlimSAM](https://github.com/czg1225/SlimSAM), [Xenova/slimsam-77-uniform](https://huggingface.co/Xenova/slimsam-77-uniform) |
+| Grounding DINO Tiny uint8 | Text-prompted (open-vocabulary) detection | 195 MB + vocabulary | Apache-2.0 | [IDEA Research](https://github.com/IDEA-Research/GroundingDINO), [onnx-community](https://huggingface.co/onnx-community/grounding-dino-tiny-ONNX) |
+| RTMPose-m (Body7) | Person pose, 17 COCO keypoints (runs a YOLOX detector first) | 50.8 MB zip | Apache-2.0 (training data includes research-only sets) | [OpenMMLab MMPose](https://github.com/open-mmlab/mmpose/tree/main/projects/rtmpose) ONNX SDK |
+| ConvNeXt-Tiny | Image classification, ImageNet-1k | 114.5 MB | Apache-2.0 | [facebook/convnext-tiny-224](https://huggingface.co/facebook/convnext-tiny-224), Xenova export |
+| MobileNetV4-Conv-Small | Fast image classification, ImageNet-1k | 15.1 MB | Apache-2.0 | [timm](https://huggingface.co/timm/mobilenetv4_conv_small.e2400_r224_in1k), onnx-community export |
+| PP-OCRv4 det + PP-OCRv3 en rec | Text detection and recognition | 13.7 MB | Apache-2.0 | [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR), RapidOCR ONNX |
+| Docling layout "heron" | Document layout, 17 region classes | 171 MB | Apache-2.0 | [docling-project](https://huggingface.co/docling-project/docling-layout-heron-onnx) |
+| Depth Anything V2 Small | Monocular relative depth | 99 MB | Apache-2.0 (Small only) | [Depth Anything V2](https://github.com/DepthAnything/Depth-Anything-V2), onnx-community export |
+| IS-Net general use | Background removal | 179 MB | not stated separately by the publisher | [DIS](https://github.com/xuebinqin/DIS), ONNX by [rembg](https://github.com/danielgatis/rembg) |
+| MODNet | Portrait matting | 25.9 MB | Apache-2.0 | [MODNet](https://github.com/ZHKKKe/MODNet), Xenova export |
 
-Models were chosen for permissive licences that suit both GPL and commercial distribution. Popular alternatives
-were left out on purpose: Ultralytics YOLOv5/v8/11 weights and code are AGPL-3.0 (or an Ultralytics commercial
-licence), which would bind every user of a hosted or distributed build to AGPL terms.
+Each model was downloaded from the URL in the catalogue, checked against its hash and run on real photos before
+it was added (2026-10-14). Where the host publishes a SHA-256 (Hugging Face LFS) the catalogue says so; otherwise
+the hash was recorded when the file was verified for the catalogue, and the Models workspace says that too.
+
+### Licences
+
+The application is GPL-3.0-or-later and downloads models only when the user asks, showing each model's licence and
+notes first. The catalogue prefers permissive weights; three entries need care, and say so in the application:
+
+- **YOLO11n-OBB** is AGPL-3.0 (Ultralytics). It is the only oriented detector with downloadable ONNX weights that was
+  found: RTMDet-R, PP-YOLOE-R and Oriented R-CNN publish PyTorch or Paddle weights only. Every DOTA-trained model is
+  also bound by DOTA's academic-use-only terms. Drawing and exporting rotated boxes does not need this model.
+- **IS-Net general use**: the DIS repository is Apache-2.0 and links these weights without a separate licence; the
+  DIS5K dataset has its own terms. MODNet (Apache-2.0) is the clearly licensed alternative for portraits.
+- **RTMPose and the ImageNet classifiers** were trained partly on datasets with research-oriented terms (AI
+  Challenger, MPII, Halpe, PoseTrack; ImageNet).
+
+Models not added on purpose: Depth Anything V2 Base/Large and SegFormer (non-commercial licences), MaskFormer
+(CC-BY-NC), MobileViT segmentation (Apple research licence), BiRefNet-lite (about 60 s and 6.6 GB per image on a
+laptop CPU), and exemplar counters (GeCo, CountGD, DAVE, LOCA, CounTR: no ONNX weights published).
+
+### Helpers
+
+A model can name helper models it runs first (`"helpers"` in its catalogue entry). RTMPose needs a person
+detector: the first installed of YOLOX-S, YOLOX-Tiny and YOLOX-Nano runs on the image, and each person box is
+cropped for the pose network. The Run panel names the helper it will use, or which one to install.
+
+### Model Gallery
+
+The Gallery workspace shows each model's real output on a photo the project may redistribute: COCO 2017 val photos
+under CC BY 2.0 (attributed to their Flickr pages), a CC0 street video by Raysonho on Wikimedia Commons, a USGS
+public-domain orthophoto, and a report page written for this project. `scripts/build_gallery.py` produces every
+output with the inference worker and records the model version, device, ONNX Runtime version, date and latency
+(after a warm-up run) in `annotation_workbench/gallery/gallery.json`; `scripts/gallery_plan.json` lists the inputs,
+their sources and the settings. A model without an example says so; nothing is illustrated by hand.
 
 ## Downloads
 
@@ -35,8 +75,9 @@ licence), which would bind every user of a hosted or distributed build to AGPL t
   never as verified by hash.
 - **Remove** asks for confirmation, deletes the model's folder and keeps every annotation made with it.
 
-Verified on 2026-10-13: all five catalogue models downloaded from the URLs above on a home connection and matched
-their pinned sizes and hashes.
+Verified on 2026-10-13 (the first five models) and 2026-10-14 (the other eleven): every file downloaded from its
+catalogue URL and matched its size and hash. Files inside an archive (RTMPose's ONNX file in OpenMMLab's ZIP) are
+extracted after the archive is verified, and checked against their own size and hash; only the named member is read.
 
 ## Runtime and devices
 
@@ -59,17 +100,7 @@ development machine has no supported GPU.
 Settings → Inference Python can point the worker at another interpreter, for example one that has a GPU build of
 ONNX Runtime.
 
+
 ## Local detectors
 
-**Add a local detector** registers a YOLOX-format ONNX export (input `1×3×S×S` BGR 0–255, raw head output) with
-its class names in output order. The file is copied into the models folder. Its licence is the user's
-responsibility; the Model Manager shows its licence as "set by the user".
-
-## Adding a model
-
-- **Same family**, for example another YOLOX size: add an entry to `annotation_workbench/catalog/models.json` with
-  its files, sizes, SHA-256, licence, labels and default parameters. The catalogue test checks that every entry is
-  complete and safe.
-- **New family**: write an adapter in `annotation_workbench/engine/adapters/` that implements `load`, `predict`
-  and `close` and returns predictions in the common schema (see [architecture](architecture.md)). Register it in
-  `engine/adapters/__init__.py` and add a real-model test to the suite.
+The Model Manager can register a YOLOX-format ONNX detector the user trained, with its class names; its licence is the user's responsibility.
