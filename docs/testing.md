@@ -90,7 +90,12 @@ YOLOX-S's accuracy.
 
 ### Packaged build
 
-See the Windows build section at the end of this page.
+**Windows 11, Nuitka 4.2.2, Python 3.11, ONNX Runtime 1.30 (2026-10-14):** `deploy/build.py` produced a 428 MB
+standalone folder with the gallery examples and without model weights (16 min with a warm compiler cache). The smoke
+test opened every workspace of the packaged application, the new Gallery included, each closing by itself with exit
+code 0, and the packaged worker loaded YOLOX-Nano and found 17 objects (cars, people, traffic lights) in the CC0 street
+frame in 40 ms on the CPU execution provider. The crash log stayed empty. One earlier attempt failed because a
+gallery photo was replaced while Nuitka was copying package data; the build was rerun on unchanged sources.
 
 ## Clean-room check
 
